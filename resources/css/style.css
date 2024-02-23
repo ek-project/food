@@ -318,7 +318,8 @@ header {
 }
 
 .meal-photo {
-    width: 100%;
+    width: auto;
+    height: 100%;
     margin: 0;
     overflow: hidden;
     background-color: black;
