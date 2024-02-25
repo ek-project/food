@@ -4,16 +4,71 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href = "vendors/css/grid.css">
-        <link rel="stylesheet" href = "vendors/css/normalize.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+        <link rel="stylesheet" href = "resources/css/ls_style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;1,300&display=swap" rel="stylesheet">
         <title>Foodelight</title>
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
         <link rel="icon" type="image/svg+xml" href="resources/favicons/favicon.svg">
         <link rel="icon" type="image/png" href="resources/favicons/favicon.png">
 
     </head>
+
+    <body>
+        <section>
+            <div class="row">
+                <form method="post" action="#" class="contact-form">
+                    <h2>Sign-up</h2>
+
+                    <div class="row">
+                        <div class="col span-1-of-3">
+                            <label for="name">Username</label>
+                        </div>
+                        <div class="col span-2-of-3">
+                            <input type="text" name="name" id="name" placeholder="Your Username" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col span-1-of-3">
+                            <label for="email">Email address</label>
+                        </div>
+                        <div class="col span-2-of-3">
+                            <input type="email" name="email" id="email" placeholder="Your Email address" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col span-1-of-3">
+                            <label for="owd">Password</label>
+                        </div>
+                        <div class="col span-2-of-3">
+                            <input type="password" name="pwd" id="pwd" placeholder="Your Password" required>
+                            <ion-icon name="eye-off-outline" class="ion"></ion-icon>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label><input type="checkbox" required> I agree to the terms & conditions</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col span-1-of-3">
+                            <label>&nbsp;</label>
+                        </div>
+                        <div class="col span-2-of-3">
+                            <input type="submit" value="Sign Up">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <p>Already have an account?<a href="#">Sign-in</a></p>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+    </body>
 
 </html>
