@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link rel="stylesheet" href = "resources/css/ls_style.css">
+        <link rel="stylesheet" href = "vendors/css/grid.css">
+        <link rel="stylesheet" href = "vendors/css/normalize.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;1,300&display=swap" rel="stylesheet">
@@ -17,57 +19,91 @@
 
     <body>
         <section>
-            <div class="row">
+            <div class="row form-container">
+
+                <div class="row">
+                    <a href="index.html" class="logo">
+                        <img src="resources/img/orange.svg" alt="Foodelight-logo">
+                    </a>
+                </div>
+
                 <form action="resources/php/signup.php" method="post" class="contact-form">
                     <h2>Sign-up</h2>
 
                     <div class="row">
-                        <div class="col span-1-of-3">
-                            <label for="name">Username</label>
-                        </div>
-                        <div class="col span-2-of-3">
-                            <input type="text" name="name" id="name" placeholder="Your Username" required>
+                        <div class="row span-2-of-2 sys" >
+                            <input type="text" name="name" id="name" placeholder="Username" required>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col span-1-of-3">
-                            <label for="email">Email address</label>
-                        </div>
-                        <div class="col span-2-of-3">
-                            <input type="email" name="email" id="email" placeholder="Your Email address" required>
+                        <div class="row span-2-of-2 sys">
+                            <input type="email" name="email" id="email" placeholder="Email address" required>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col span-1-of-3">
-                            <label for="pwd">Password</label>
+                        <div class="row span-2-of-2 sys">
+                            <input type="password" name="pwd" id="pwd1" placeholder="Create Password" required minlength="8" maxlength="16">
                         </div>
-                        <div class="col span-2-of-3">
-                            <input type="password" name="pwd" id="pwd" placeholder="Your Password" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="row span-2-of-2 contain">
+                            <input type="password" name="pwd" id="pwd2" placeholder="Confirm Password" required minlength="8" maxlength="16">
                             <ion-icon name="eye-off-outline" class="small"></ion-icon>
                         </div>
                     </div>
 
                     <div class="row">
-                        <label><input type="checkbox" required> I agree to the terms & conditions</label>
-                    </div>
-
-                    <div class="row">
-                        <div class="col span-1-of-3">
-                            <label>&nbsp;</label>
-                        </div>
-                        <div class="col span-2-of-3">
-                            <input type="submit" value="Sign Up">
+                        <div class="col span-2-of-2">
+                            <label><input type="checkbox" required> I agree to the terms & conditions</label>
                         </div>
                     </div>
 
                     <div class="row">
-                        <p>Already have an account?<a href="#">Sign-in</a></p>
+                        <div class="row span-2-of-2">
+                            <input type="submit" id="submit-btn" value="Create your account" disabled>
+                        </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col span-2-of-2">
+                            <p>Already have an account?<a href="#" class="login">Login</a></p>
+                        </div>
+                    </div>
+
+                    <div class="line"></div>
+
+                    <div class="row social-icons">
+                        <div class="icon-container">
+                            <a href="https://www.google.com">
+                                <img class="google-icon" src="resources/img/icons8-google.svg" alt="Google Icon">
+                            </a>
+                        </div>
+                        <div class="icon-container">
+                            <a href="https://www.facebook.com">
+                                <img class="facebook-icon" src="resources/img/icons8-facebook.svg" alt="Facebook Icon">
+                            </a>
+                        </div>
+                    </div>
                 </form>
             </div>
+        </section>
+
+        <section class="less">
+            <footer>
+                <div class="row">
+                    <p>&copy; 2024 Foodelight. All rights reserved.</p>
+                    <ul>
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Follow us</a></li>
+                    </ul>
+                </div>
+            </footer>
         </section>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>

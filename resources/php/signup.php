@@ -23,18 +23,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = htmlspecialchars($_POST["email"]);
         $password = htmlspecialchars($_POST["pwd"]);
 
-        // Use prepared statement to prevent SQL injection
-        $stmt = $conn->prepare("INSERT INTO cdetails (username, email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $username, $email, $password);
+        // Check if username already exists
+        $checkQuery = "SELECT username FROM cdetails WHERE username = ?";
+        $checkStmt = $conn->prepare($checkQuery);
+        $checkStmt->bind_param("s", $username);
+        $checkStmt->execute();
+        $checkStmt->store_result();
 
-        if ($stmt->execute()) {
-            echo "Record added successfully!";
+        if ($checkStmt->num_rows > 0) {
+            // Username already taken, display an error message
+            echo "Username is already taken. Please choose a different one.";
         } else {
-            echo "Error: " . $stmt->error;
+            // Username is available, proceed with insertion
+            $insertQuery = "INSERT INTO cdetails (username, email, password) VALUES (?, ?, ?)";
+            $insertStmt = $conn->prepare($insertQuery);
+            $insertStmt->bind_param("sss", $username, $email, $password);
+
+            if ($insertStmt->execute()) {
+                echo "Record added successfully!";
+            } else {
+                echo "Error: " . $insertStmt->error;
+            }
+
+            // Close the prepared statements
+            $insertStmt->close();
         }
 
         // Close the prepared statement
-        $stmt->close();
+        $checkStmt->close();
+
 
     } else {
         // Handle case where one or more keys are not set
