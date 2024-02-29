@@ -38,11 +38,21 @@ $(document).ready(function() {
   }
 
 });
+
+$("#name, #email, #pwd1, #pwd2").on("input", function() {
+    $("#error-message").text('').hide();
+});
+
 $("#submit-btn").click(function(e) {
     e.preventDefault();
     $("#success-message").text('').hide()
     $("#error-message").text('').hide()
-    if ($("#name").val() && $("#email").val() && $("#pwd1").val() && $("#pwd2").val()) {
+
+    if (!$("#agree").is(":checked")) {
+        // Display an error message if the checkbox is not checked
+        $("#error-message").text("Please agree to the terms and conditions before submitting the form.").show();
+
+    }else if ($("#name").val() && $("#email").val() && $("#pwd1").val() && $("#pwd2").val()) {
         if ($("#pwd1").val() === $("#pwd2").val()) {
             $.ajax({
                 url: "resources/php/signup.php",
@@ -61,7 +71,7 @@ $("#submit-btn").click(function(e) {
         } else {
             $("#error-message").text("Error: Passwords do not match.");
         }
-    } else {
+    }else {
         $("#error-message").text("Error: All fields are required.");
     }
 });

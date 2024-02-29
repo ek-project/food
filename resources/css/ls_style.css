@@ -24,7 +24,7 @@ html,body {
 
 body {
     padding: 15px;
-    background: radial-gradient(circle at 50% 50%, #e67e22, #e67e22 70%, #323232 70%);
+    background-image: linear-gradient(to right, #ff9966, #ff5e62);
     background-size: cover;
     position: relative;
 }
