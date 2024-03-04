@@ -62,6 +62,7 @@ $("#submit-btn").click(function(e) {
                     if (response === "Record added successfully!") {
                         $("#success-message").text(response).show();
                         $(".contact-form")[0].reset();
+                        window.location.href = "login.html"
                     } else {
                         $("#error-message").text(response).show();
                         $(".contact-form")[0].reset();
