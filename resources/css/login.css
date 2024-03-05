@@ -114,7 +114,7 @@ input[type=checkbox] {
 
 input[type=submit]{
     display: inline-block;
-    padding: 10px 30px;
+    padding: 10px 100px;
     font-weight: 300;
     border-radius: 200px;
     text-decoration: none;
@@ -150,7 +150,9 @@ input[type=submit]:active{
 
 
 a.login:link,
-a.login:visited {
+a.login:visited,
+.forgot:link,
+.forgot:visited{
     text-decoration: none;
     color: #e67e22;
     padding-bottom: 1px;
@@ -163,7 +165,9 @@ a.login:visited {
 }
 
 a.login:hover,
-a.login:active {
+a.login:active,
+.forgot:hover,
+.forgot:active {
     color: #555;
     border-bottom: 1px solid transparent;
 }
@@ -214,10 +218,10 @@ img {
 }
 
 .form-container {
-    width: 200%;
+    width: 100%;
     max-width: 400px;
-    margin: 0 auto 0;
-    padding: 20px; /* Add padding here */
+    margin: auto;
+    padding: 30px 20px /* Add padding here */;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -225,60 +229,16 @@ img {
   }
   
 .form-container input[type="text"],
-.form-container input[type="password"],
-.form-container input[type="email"] {
+.form-container input[type="password"] {
     width: 100%; /* Make the input fields take up the full width */ 
     margin-bottom: 1px auto;/* Add margin between input fields */
     padding: 10px; /* Add padding to the input fields */
 }
 
 
-.form-container input[type=checkbox],
 .form-container input[type=submit] {
     margin: 10px 0;  /* Add margin between input fields */
-
 }
-
-
-header {
-    background-color: transparent;
-    color: #000000;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .logo {
-    flex-shrink: 0;
-  }
-  
-  .logo a {
-    display: inline-block;
-    height: 32px;
-    width: auto;
-  }
-  
-  header nav {
-    flex-grow: 1;
-    text-align: right;
-  }
-  
-  header ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-  }
-  
-  header li {
-    margin-left: 20px;
-  }
-  
-  header a {
-    color: #000000;
-    text-decoration: none;
-  }
 
 
 footer {
@@ -317,7 +277,7 @@ footer {
 
 .error-message {
     display: none;
-    color: red;
+    color: #000000;
     margin-top: 10px;
 }
 
