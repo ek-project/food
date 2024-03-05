@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href = "resources/css/login.css">
+        <link rel="stylesheet" href = "resources/css/forgot.css">
         <link rel="stylesheet" href = "vendors/css/grid.css">
         <link rel="stylesheet" href = "vendors/css/normalize.css">
         <link rel="stylesheet" href = "resources/css/ls_queries.css">
@@ -19,7 +19,7 @@
     </head>
 
     <body>
-        <section>
+        <section class="more">
             <div class="row form-container">
 
                 <div class="row">
@@ -28,25 +28,12 @@
                     </a>
                 </div>
 
-                <form action="resources/php/login.php" method="post" class="contact-form">
-                    <h2>Login</h2>
+                <form action="resources/php/forgot.php" method="post" class="contact-form">
+                    <h2>Forgot Password</h2>
 
                     <div class="row">
                         <div class="row span-2-of-2 sys">
-                            <input type="text" name="username" id="username" placeholder="Username/Email" required>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="row span-2-of-2 sys contain">
-                            <input type="password" name="pwd" id="pwd" placeholder="Password" required>
-                            <ion-icon name="eye-off-outline" class="small"></ion-icon>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col span-2-of-2">
-                            <a href="forgot.html" class="forgot">Forgot Password?</a>
+                            <input type="email" name="email" id="email" placeholder="Email Address" required>
                         </div>
                     </div>
 
@@ -56,28 +43,7 @@
 
                     <div class="row">
                         <div class="row span-2-of-2">
-                            <input type="submit" id="submit-btn" value="Login" disabled>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col span-2-of-2">
-                            <p>Don't have an account?<a href="login&signup.html" class="login">Signup</a></p>
-                        </div>
-                    </div>
-
-                    <div class="line"></div>
-
-                    <div class="row social-icons">
-                        <div class="icon-container">
-                            <a href="https://www.google.com">
-                                <img class="google-icon" src="resources/img/icons8-google.svg" alt="Google Icon">
-                            </a>
-                        </div>
-                        <div class="icon-container">
-                            <a href="https://www.facebook.com">
-                                <img class="facebook-icon" src="resources/img/icons8-facebook.svg" alt="Facebook Icon">
-                            </a>
+                            <input type="submit" id="submit-btn" value="Submit">
                         </div>
                     </div>
                 </form>
@@ -103,7 +69,7 @@
         <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/selectivizr@1.0.3/selectivizr.min.js"></script>
-        <script src="resources/js/login.js"></script>
+        <script src="resources/js/forgot.js"></script>
         <script src="vendors/js/jquery.waypoints.min.js"></script>
 
     </body>
