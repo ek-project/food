@@ -23,8 +23,17 @@
 
 /* Small phones: from 0 to 480px */
 @media only screen and (max-width: 480px) {
+
     footer li {
         display: inline-block;
         margin-right: 10px;
       }
+
+    .form-container {
+        width: 100%;
+    }
+
+    .line{
+      width: 200px;
+    }
 }

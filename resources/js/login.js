@@ -85,6 +85,6 @@ $("#submit-btn").click(function(e) {
       }
   });
   }else {
-      $("#error-message").text("Error: All fields are required.");
+      $("#error-message").text("Error: All fields are required.").show();
   }
 });

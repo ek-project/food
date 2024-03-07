@@ -53,26 +53,35 @@ $("#submit-btn").click(function(e) {
         $("#error-message").text("Please agree to the terms and conditions before submitting the form.").show();
 
     }else if ($("#name").val() && $("#email").val() && $("#pwd1").val() && $("#pwd2").val()) {
-        if ($("#pwd1").val() === $("#pwd2").val()) {
-            $.ajax({
-                url: "resources/php/signup.php",
-                type: "POST",
-                data: $(".contact-form").serialize(),
-                success: function(response) {
-                    if (response === "Record added successfully!") {
-                        $("#success-message").text(response).show();
-                        $(".contact-form")[0].reset();
-                        window.location.href = "login.html"
-                    } else {
-                        $("#error-message").text(response).show();
-                        $(".contact-form")[0].reset();
+        var email = $('#email').val();
+        var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+        if (emailRegex.test(email)) {
+            if ($("#pwd1").val() === $("#pwd2").val()) {
+                $.ajax({
+                    url: "resources/php/signup.php",
+                    type: "POST",
+                    data: $(".contact-form").serialize(),
+                    success: function(response) {
+                        if (response === "Record added successfully!") {
+                            $("#success-message").text(response).show();
+                            $(".contact-form")[0].reset();
+                            window.location.href = "login.html"
+                        } else {
+                            $("#error-message").text(response).show();
+                            $(".contact-form")[0].reset();
+                        }
                     }
-                }
-            });
+                });
+            } else {
+               $("#error-message").text("Error: Passwords do not match.");
+            }
         } else {
-            $("#error-message").text("Error: Passwords do not match.");
+            $("#error-message").text("Error: Invalid Email format.");
+            return;
         }
     }else {
         $("#error-message").text("Error: All fields are required.");
     }
 });
+

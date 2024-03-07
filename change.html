@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href = "resources/css/forgot.css">
+        <link rel="stylesheet" href = "resources/css/change.css">
         <link rel="stylesheet" href = "vendors/css/grid.css">
         <link rel="stylesheet" href = "vendors/css/normalize.css">
         <link rel="stylesheet" href = "resources/css/ls_queries.css">
@@ -19,7 +19,7 @@
     </head>
 
     <body>
-        <section class="more">
+        <section>
             <div class="row form-container">
 
                 <div class="row">
@@ -28,19 +28,32 @@
                     </a>
                 </div>
 
-                <form action="resources/php/forgot.php" method="post" class="contact-form">
-                    <h2>Forgot Password</h2>
+                <form action="resources/php/" method="post" class="contact-form">
+                    <h2>Change Password</h2>
 
                     <div class="row">
-                        <div class="row span-2-of-2 sys">
-                            <input type="email" name="email" id="email" placeholder="Email Address" required>
+                        <div class="row span-2-of-2 sys contain">
+                            <input type="password" name="pwd1" id="pwd1" placeholder="Old password" required>
+                            <ion-icon name="eye-off-outline" class="small" id="icon1"></ion-icon>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="row span-2-of-2 sys otpverify">
-                            <input type="text" name="otp" id="otp" placeholder="OTP">
-                            <input type="submit" class="btns" id="verify-btn" value="Verify">
+                        <div class="row span-2-of-2 sys">
+                            <input type="password" name="pwd2" id="pwd2" placeholder="Create New Password" required minlength="8" maxlength="16">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="row span-2-of-2 sys contain">
+                            <input type="password" name="pwd3" id="pwd3" placeholder="Confirm New Password" required minlength="8" maxlength="16">
+                            <ion-icon name="eye-off-outline" class="small" id="icon2"></ion-icon>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="row span-2-of-2 sys">
+                            <p>Note: Old password is required to change to new one. Once password changed, You can login with new password.</p>
                         </div>
                     </div>
 
@@ -50,10 +63,9 @@
 
                     <div class="row">
                         <div class="row span-2-of-2">
-                            <input type="submit" id="submit-btn" class="sot" value="Send OTP" disabled>
+                            <input type="submit" id="submit-btn" value="Submit" disabled>
                         </div>
                     </div>
-
                 </form>
             </div>
         </section>
@@ -77,7 +89,7 @@
         <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/selectivizr@1.0.3/selectivizr.min.js"></script>
-        <script src="resources/js/forgot.js"></script>
+        <script src="resources/js/change.js"></script>
         <script src="vendors/js/jquery.waypoints.min.js"></script>
 
     </body>

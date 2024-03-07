@@ -1,9 +1,6 @@
 <?php
 
-$servername = "localhost";
-$username = "root";
-$password = "subham2003";
-$dbname = "foodelight";
+include 'config.php';
 
 try {
     // Create connection
