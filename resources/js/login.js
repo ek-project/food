@@ -75,9 +75,66 @@ $("#submit-btn").click(function(e) {
       type: "POST",
       data: $(".contact-form").serialize(),
       success: function(response) {
-          if (response === "Login Successful") {
+          if (response === "OTP has been sent to your email") {
               $("#success-message").text(response).show();
-              $(".contact-form")[0].reset();
+              $(".otpverify").show();
+
+              $("#otp").on("input", function() {
+                  $("#error-message").text('').hide();
+              });
+              
+              var timeLeft = 120; // 2 minutes in seconds
+              var timerElement = $("#timer"); // replace with the ID of your timer element
+
+              timerElement.text("Time left: 2:00");
+
+              // Disable the "Send OTP" button
+              $("#submit-btn").prop("disabled", true);
+
+              var timerInterval = setInterval(function() {
+                  timeLeft--;
+                  var minutes = Math.floor(timeLeft / 60);
+                  var seconds = timeLeft % 60;
+
+                  if (seconds < 10) {
+                      seconds = "0" + seconds;
+                  }
+
+                  timerElement.text("Time left: " + minutes + ":" + seconds);
+
+                  if (timeLeft <= 0) {
+                      clearInterval(timerInterval);
+                      timerElement.text("Time's up!");
+
+                      // Enable the "Send OTP" button
+                      $("#submit-btn").prop("disabled", false);
+                  }
+              }, 1000);
+
+              $("#verify-btn").click(function(e) {
+                  e.preventDefault();
+                  $("#success-message").text('').hide()
+                  $("#error-message").text('').hide()
+              
+                  if ($("#otp").val()) {
+                      $.ajax({
+                          url: "resources/php/login.php", // replace with the URL of your verification script
+                          type: "POST",
+                          data: { otp: $("#otp").val() },
+                          success: function(response) {
+                              if (response === "OTP is valid.") {
+                                  $("#success-message").text(response).show();
+                                  $(".contact-form")[0].reset();
+                              } else {
+                                  $("#error-message").text(response).show();
+                                  $("#otp").val('');
+                              }
+                          }
+                      });
+                  } else {
+                      $("#error-message").text("Error: Please enter the OTP.").show();
+                  }
+              });
           } else {
               $("#error-message").text(response).show();
               $(".contact-form")[0].reset();

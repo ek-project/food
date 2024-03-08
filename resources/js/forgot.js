@@ -28,7 +28,6 @@ $("#submit-btn").click(function(e) {
     e.preventDefault();
     $("#success-message").text('').hide()
     $("#error-message").text('').hide()
-    $(".otpverify").hide();
 
     if ($("#email").val()) {
         $.ajax({
@@ -39,6 +38,39 @@ $("#submit-btn").click(function(e) {
                 if (response === "OTP has been sent to your email") {
                     $("#success-message").text(response).show();
                     $(".otpverify").show();
+
+                    $("#otp").on("input", function() {
+                        $("#error-message").text('').hide();
+                    });
+                    
+                    var timeLeft = 120; // 2 minutes in seconds
+                    var timerElement = $("#timer"); // replace with the ID of your timer element
+
+                    timerElement.text("Time left: 2:00");
+
+                    // Disable the "Send OTP" button
+                    $("#submit-btn").prop("disabled", true);
+
+                    var timerInterval = setInterval(function() {
+                        timeLeft--;
+                        var minutes = Math.floor(timeLeft / 60);
+                        var seconds = timeLeft % 60;
+
+                        if (seconds < 10) {
+                            seconds = "0" + seconds;
+                        }
+
+                        timerElement.text("Time left: " + minutes + ":" + seconds);
+
+                        if (timeLeft <= 0) {
+                            clearInterval(timerInterval);
+                            timerElement.text("Time's up!");
+
+                            // Enable the "Send OTP" button
+                            $("#submit-btn").prop("disabled", false);
+                        }
+                    }, 1000);
+
                     $("#verify-btn").click(function(e) {
                         e.preventDefault();
                         $("#success-message").text('').hide()
@@ -55,7 +87,7 @@ $("#submit-btn").click(function(e) {
                                         // You can add code here to proceed after successful verification
                                     } else {
                                         $("#error-message").text(response).show();
-                                        $(".otpverify")[0].reset();
+                                        $("#otp").val('');
                                     }
                                 }
                             });

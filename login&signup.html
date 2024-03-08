@@ -50,9 +50,16 @@
                     </div>
 
                     <div class="row">
-                        <div class="row span-2-of-2 contain">
+                        <div class="row span-2-of-2 contain sys">
                             <input type="password" name="pwd2" id="pwd2" placeholder="Confirm Password" required minlength="8" maxlength="16">
                             <ion-icon name="eye-off-outline" class="small"></ion-icon>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="row span-2-of-2 sys otpverify">
+                            <input type="text" name="otp" id="otp" placeholder="OTP">
+                            <input type="submit" class="btns" id="verify-btn" value="Verify">
                         </div>
                     </div>
 
@@ -66,9 +73,11 @@
 
                     <div id="error-message" class="error-message"></div>
 
+                    <div id="timer" class="timer"></div>
+
                     <div class="row">
                         <div class="row span-2-of-2">
-                            <input type="submit" id="submit-btn" value="Create your account" disabled>
+                            <input type="submit" id="submit-btn" class="sot" value="Create your account" disabled>
                         </div>
                     </div>
 

@@ -99,6 +99,7 @@ input[type=text] {
 	margin-right: 20px;
     padding: 10px;
     float: left;
+
 }
 
 .btns {
@@ -119,15 +120,20 @@ input[type=text] {
     background-color: #e67e22;
     border: 1px solid #e67e22;
     color:#fff;
-    position: fixed;
-    left: 56.5%;
-    top: 53.25%;
+    position: absolute;
+    left: 78%;
+    top: 25%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
 }
 
 .otpverify {
+    position: relative;
     display: none;
 }
-
 
 
 input[type=submit].sot{
@@ -234,5 +240,5 @@ footer a {
 .error-message {
     display: none;
     color: #FF0000;
-    margin-top: 10px;
+    margin: 10px 0;
 }
