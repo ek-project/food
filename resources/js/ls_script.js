@@ -42,12 +42,16 @@ $(document).ready(function() {
 
 });
 
-$("#name, #email, #pwd1, #pwd2").on("input", function() {
+$("#name, #email, #pwd1, #pwd2, #otp").on("input", function() {
     $("#error-message").text('').hide();
 });
 
 $("#submit-btn").click(function(e) {
     e.preventDefault();
+
+    // Disable the button
+    $(this).prop('disabled', true);
+    
     $("#success-message").text('').hide()
     $("#error-message").text('').hide()
 
@@ -127,7 +131,17 @@ $("#submit-btn").click(function(e) {
             }
         });
     }else {
-        $("#error-message").text("Error: All fields are required. Ensure you check th terms & conditions.");
+        $("#error-message").text("Error: All fields are required. Ensure you check the terms & conditions.");
+        $(this).prop('disabled', false);
     }
 });
+
+
+function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
 

@@ -39,3 +39,30 @@ $(document).ready(function() {
     }
   
   });
+
+
+  $("#submit-btn").click(function(e) {
+    e.preventDefault();
+    $("#success-message").text('').hide()
+    $("#error-message").text('').hide()
+
+    if ($("#pwd1").val() && $("#pwd2").val() && $("#pwd3").val()) {
+        $.ajax({
+            url: "resources/php/change.php",
+            type: "POST",
+            data: $(".contact-form").serialize(),
+            success: function(response) {
+                if (response === "Password updated successfully") {
+                    $("#success-message").text(response).show();
+                    $(".contact-form")[0].reset();
+                    window.location.href = "login.html"
+                } else {
+                    $("#error-message").text(response).show();
+                    $(".contact-form")[0].reset();
+                }
+            }
+        });
+    }else {
+        $("#error-message").text("Error: All fields are required.").show();
+    }
+});

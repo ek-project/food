@@ -1,4 +1,4 @@
-$("#email").on("input", function() {
+$("#email, #otp").on("input", function() {
     $("#error-message").text('').hide();
 });
 
@@ -28,6 +28,9 @@ $("#submit-btn").click(function(e) {
     e.preventDefault();
     $("#success-message").text('').hide()
     $("#error-message").text('').hide()
+
+    // Disable the button
+    $(this).prop('disabled', true);
 
     if ($("#email").val()) {
         $.ajax({
@@ -85,6 +88,7 @@ $("#submit-btn").click(function(e) {
                                     if (response === "OTP is valid.") {
                                         $("#success-message").text(response).show();
                                         // You can add code here to proceed after successful verification
+                                        window.location.href = "change.html"
                                     } else {
                                         $("#error-message").text(response).show();
                                         $("#otp").val('');
@@ -103,5 +107,6 @@ $("#submit-btn").click(function(e) {
         });
     }else {
         $("#error-message").text("Error: All fields are required.").show();
+        $(this).prop('disabled', false);
     }
 });

@@ -59,13 +59,17 @@ $(document).ready(function() {
 
 });
 
-$("#username, #pwd").on("input", function() {
+$("#username, #pwd, #otp").on("input", function() {
   $("#error-message").text('').hide();
 });
 
 
 $("#submit-btn").click(function(e) {
   e.preventDefault();
+
+  // Disable the button
+  $(this).prop('disabled', true);
+  
   $("#success-message").text('').hide()
   $("#error-message").text('').hide()
 
@@ -125,6 +129,7 @@ $("#submit-btn").click(function(e) {
                               if (response === "OTP is valid.") {
                                   $("#success-message").text(response).show();
                                   $(".contact-form")[0].reset();
+                                  window.location.href = "index2s.php"
                               } else {
                                   $("#error-message").text(response).show();
                                   $("#otp").val('');
@@ -143,5 +148,6 @@ $("#submit-btn").click(function(e) {
   });
   }else {
       $("#error-message").text("Error: All fields are required.").show();
+      $(this).prop('disabled', false);
   }
 });

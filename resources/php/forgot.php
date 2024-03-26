@@ -1,4 +1,7 @@
 <?php
+
+session_start();
+
 date_default_timezone_set("Asia/Kolkata");
 
 require '../../PHPMailer/src/Exception.php';
@@ -47,6 +50,8 @@ try {
 
             if ($checkStmt->num_rows() > 0) {
                 if ($emailpt == $email) {
+
+                    $_SESSION['email'] = $email;
 
                     $otppt = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 

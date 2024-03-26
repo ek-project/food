@@ -147,10 +147,9 @@ img {
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
-  
-.form-container input[type="text"],
-.form-container input[type="password"],
-.form-container input[type="email"] {
+
+.form-container input[type=password],
+.form-container input[type=text]{
     width: 100%; /* Make the input fields take up the full width */ 
     margin-bottom: 1px auto;/* Add margin between input fields */
     padding: 10px; /* Add padding to the input fields */
