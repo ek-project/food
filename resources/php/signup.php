@@ -47,7 +47,7 @@ try {
 
             if ($checkStmt->num_rows > 0) {
                 // Username already taken, display an error message
-                throw new Exception("Username or email is already taken. Please choose a different one.");
+                echo "Email is already taken. Please choose a different one.";
             } else {
                 $otppt = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
@@ -130,19 +130,87 @@ try {
 
                     $updateStmt->close();
 
+                    // Get the current timestamp
+                    $timestamp = microtime(true);
+
+                    // Remove the decimal point from the timestamp
+                    $timestamp = str_replace('.', '', $timestamp);
+
+                    // Get the last 6 digits of the timestamp
+                    $timestamp = substr($timestamp, -6);
+
+                    // Generate a random 3-digit number
+                    $randomNumber = random_int(100, 999);
+
+                    // Combine the timestamp and the random number to create a unique 6-digit user ID
+                    $userId = $timestamp . $randomNumber;
+
+                    $_SESSION['userId'] = $userId;
+
                     // Hash the password
                     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
                     // Username is available, proceed with insertion
-                    $insertQuery = "INSERT INTO cdetails (username, email, password) VALUES (?, ?, ?)";
+                    $insertQuery = "INSERT INTO cdetails (username, email, password, userid) VALUES (?, ?, ?, ?)";
                     $insertStmt = $conn->prepare($insertQuery);
-                    $insertStmt->bind_param("sss", $username, $email, $hashedPassword);
+                    $insertStmt->bind_param("sssi", $username, $email, $hashedPassword, $userId);
     
                     if (!$insertStmt->execute()) {
                         throw new Exception("Error: " . $insertStmt->error);
-                    }
+                    } else {
+                        $mail = new PHPMailer(true);
     
-                    echo "Record added successfully!";
+                        try {
+                            //Server settings
+                            $mail->SMTPDebug = 0;                                 
+                            $mail->isSMTP();                                      
+                            $mail->Host = 'smtp.elasticemail.com';  
+                            $mail->SMTPAuth = true;                               
+                            $mail->Username = 'nileriver6630@gmail.com';                 
+                            $mail->Password = 'D46F06FCC4076DFE0DB9E16386B509454EA6';                           
+                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;                            
+                            $mail->Port = 2525;                                    
+                
+                            //Recipients
+                            $mail->setFrom('nileriver6630@gmail.com', 'Foodelight');
+                            $mail->addAddress($email);     
+                
+                            //Content
+                            $mail->isHTML(true);                                  
+                            $mail->Subject = 'Foodelight details';
+                            $mail->Body    = "Hi " . $username . ",<br><br>Your UserID for Foodelight: " . $userId . "<br><br>UserID can be referenced in the future.<br><br>Thanks,<br>Foodelight";
+                            
+                
+                            $result = $mail->send();
+                            $expiry = 0;
+            
+                            echo 'UserID has been sent to your email';
+            
+                            if ($result == 1) {
+                                $checkQuery1 = "INSERT INTO otp_expiry(otp,is_expired) VALUES (?,?)";
+            
+                                if (!($checkStmt1 = $conn->prepare($checkQuery1))) {
+                                    throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+                                }
+            
+                                if (!$checkStmt1->bind_param("ii", $otppt, $expiry)) {
+                                    throw new Exception("Binding parameters failed: (" . $checkStmt1->errno . ") " . $checkStmt->error);
+                                }
+            
+                                if (!$checkStmt1->execute()) {
+                                    throw new Exception("Error: " . $checkStmt1->error);
+                                }
+            
+                                $checkStmt1->close();
+            
+                            } else {
+                                echo "ERROR";
+                            }
+            
+                        } catch (Exception $e) {
+                            echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+                        }
+                    }
     
                     // Close the prepared statements
                     $insertStmt->close();
@@ -154,7 +222,26 @@ try {
             } catch (Exception $e) {
                 die("Error: " . $e->getMessage());
             }
-        } else {
+
+        } else if (isset($_POST["name"])) {
+            
+            $username = htmlspecialchars($_POST["name"]);
+
+            // Check if username already exists
+            $checkQuery = "SELECT * FROM cdetails WHERE username = ?";
+            $checkStmt = $conn->prepare($checkQuery);
+            $checkStmt->bind_param("s", $username);
+            $checkStmt->execute();
+            $checkStmt->store_result();
+
+            if ($checkStmt->num_rows > 0) {
+                // Username already taken, display an error message
+                echo "Username already taken. Please choose a different one.";
+            } else {
+                echo "Username available.";
+            }
+
+        }else {
             // Handle case where one or more keys are not set
             throw new Exception("Error: One or more form fields are missing2.");
         }

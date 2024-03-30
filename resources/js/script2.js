@@ -1,8 +1,7 @@
-$(document).ready(function() {
-    $('#height').on('input', function() {
-        $('#height_output').text($(this).val());
-    });
+$("#goal, #gender, #days, #meal, #diet, #sty").on('change', function() {
+    $("#error-message").text('').hide();
 });
+
 
 $(document).ready(function() {
     // Check the selected goal when the page loads
@@ -64,15 +63,6 @@ $(document).ready(function() {
             }
         });
     }
-
-    function limitCheckboxes(limit) {
-        $('.choose input[type=checkbox]').off('change').on('change', function(evt) {
-            if($('.choose input[type=checkbox]:checked').length > limit) {
-                $(this).prop('checked', false);
-                alert('You can only select ' + limit + ' meal(s).');
-            }
-        });
-    }
 });
 
 $(document).ready(function() {
@@ -88,25 +78,44 @@ $(document).ready(function() {
     };
 
     // Calculate the initial price
-    var price = calculatePrice()
+
 
     // Update the price when the selected option in any select box changes
-    $('#days, #meal, #diet, #sty').on('change', function() {
-        price = calculatePrice()
-        $('#price').text('₹ ' + price).show();
+    function calculateAndDisplayPrice() {
+        var goal = $("#goal").val();
+        var gender = $("#gender").val();
+        var days = $("#days").val();
+        var meal = $("#meal").val();
+        var diet = $("#diet").val();
+        var sty = $("#sty").val();
 
-        $.ajax({
-            url: 'resources/php/index2.php', // Replace this with the path to your PHP script
-            type: 'POST',
-            data: { price: price },
-            success: function(data) {
-                console.log('Server response:', data);
-            },
-            error: function(error) {
-                console.log('Error:', error);
-            }
-        });
-    });
+        if (goal && gender && days && meal && diet && sty) {
+            var price = calculatePrice(goal, gender, days, meal, diet, sty);
+            $("#price").text('₹ ' + price).show();
+
+            $.ajax({
+                url: 'resources/php/index2.php', // Replace this with the path to your PHP script
+                type: 'POST',
+                data: { price: price },
+                success: function(data) {
+                    console.log('Server response:', data);
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        } else {
+            $("#error-message").text("Error: All fields are required.").show();
+        }
+    }
+
+    // Calculate and display the price when the page loads
+    calculateAndDisplayPrice();
+
+    // Calculate and display the price when any select box changes
+    $("#goal, #gender, #days, #meal, #diet, #sty").on('change', calculateAndDisplayPrice);
+
+
 
     // Calculate the price based on the selected options
     function calculatePrice() {
@@ -128,37 +137,49 @@ $(document).ready(function() {
 
         return prices.sty[selectedDiet][selectedSty] * selectedDays * selectedMeal;
     }
-});
 
-$("#submit-btn").click(function(e) {
-    e.preventDefault();
-    $("#success-message").text('').hide()
-    $("#error-message").text('').hide()
-
-    var allFieldsFilled = true;
-    $(".contact-form input").each(function() {
-        if (!$(this).val()) {
-            allFieldsFilled = false;
-            return false; // Break out of the each loop
+    $("#submit-btn").click(function(e) {
+        e.preventDefault();
+        $("#success-message").text('').hide()
+        $("#error-message").text('').hide()
+    
+        var allFieldsFilled = true;
+        $(".contact-form input").each(function() {
+            if (!$(this).val()) {
+                allFieldsFilled = false;
+                return false; // Break out of the each loop
+            }
+        });
+      
+        if (allFieldsFilled){
+          $.ajax({
+            url: "resources/php/index2.php",
+            type: "POST",
+            data: $(".contact-form").serialize(),
+            success: function(response) {
+                if (response === "Redirecting to payment Page...") {
+                    $("#success-message").text(response).show();
+                    window.location.href = "index3.php"
+                } else {
+                    $("#error-message").text(response).show();
+                    $(".contact-form")[0].reset();
+                    $('.choose input[type=checkbox]').prop('checked', false); // Uncheck all checkboxes
+                    $('.choose').show(); // Show the checkboxes
+                    var price1 = calculatePrice();
+                    $("#price").text('₹ ' + price1); // Set the price back to its default value
+                }
+            }
+          });
+        }else {
+            $("#error-message").text("Error: All fields are required.").show();
         }
     });
-  
-    if (allFieldsFilled){
-      $.ajax({
-        url: "resources/php/index2.php",
-        type: "POST",
-        data: $(".contact-form").serialize(),
-        success: function(response) {
-            if (response === "Redirecting to payment Page...") {
-                $("#success-message").text(response).show();
-                window.location.href = "index3.php"
-            } else {
-                $("#error-message").text(response).show();
-                $(".contact-form")[0].reset();
-            }
-        }
-      });
-    }else {
-        $("#error-message").text("Error: All fields are required.").show();
-    }
 });
+
+
+
+window.onpageshow = function(event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+};

@@ -16,13 +16,10 @@ try {
     // Check if the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        if (isset($_POST["goal"]) && isset($_POST["gender"]) && isset($_POST["age"]) && isset($_POST["weight"]) && isset($_POST["height"])  && isset($_POST["days"]) && isset($_POST["meal"]) && isset($_POST["diet"]) && isset($_POST["sty"]) && isset($_POST["choose"])) {
+        if (isset($_POST["goal"]) && isset($_POST["gender"]) && isset($_POST["days"]) && isset($_POST["meal"]) && isset($_POST["diet"]) && isset($_POST["sty"]) && isset($_POST["choose"])) {
             // Retrieve form data
             $goal = htmlspecialchars(trim($_POST["goal"]));
             $gender = htmlspecialchars(trim($_POST["gender"]));
-            $age = htmlspecialchars(trim($_POST["age"]));
-            $weight = htmlspecialchars(trim($_POST["weight"]));
-            $height = htmlspecialchars(trim($_POST["height"]));
             $days = htmlspecialchars(trim($_POST["days"]));
             $meal = htmlspecialchars(trim($_POST["meal"]));
             $diet = htmlspecialchars(trim($_POST["diet"]));
@@ -70,9 +67,6 @@ try {
 
                 $_SESSION['goal'] = $goal;
                 $_SESSION['gender']= $gender;
-                $_SESSION['age'] = $age;
-                $_SESSION['weight'] = $weight;
-                $_SESSION['height'] = $height;
                 $_SESSION['days'] = $days;
                 $_SESSION['meal'] = $meal;
                 $_SESSION['diet'] = $diet;

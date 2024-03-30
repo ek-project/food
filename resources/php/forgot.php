@@ -45,7 +45,7 @@ try {
             }
 
             $checkStmt->store_result();
-            $checkStmt->bind_result($username, $email, $password); // bind the result set columns to PHP variable
+            $checkStmt->bind_result($username, $email, $password, $userId); // bind the result set columns to PHP variable
             $checkStmt->fetch();
 
             if ($checkStmt->num_rows() > 0) {
@@ -112,7 +112,7 @@ try {
                 }
 
             } else {
-                echo "Invalid credentials2";
+                echo "Account not Found!";
             }
 
         } else if (isset($_POST["otp"])) {

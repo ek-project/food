@@ -93,15 +93,17 @@ try {
                 $email = $_SESSION['email'];
                 $goal = $_SESSION['goal'];
                 $gender = $_SESSION['gender'];
-                $age = $_SESSION['age'];
-                $weight = $_SESSION['weight']; 
-                $height = $_SESSION['height'];
                 $days = $_SESSION['days'];
                 $meal = $_SESSION['meal'];
                 $diet = $_SESSION['diet'];
                 $sty = $_SESSION['sty'];
                 $choose = $_SESSION['choose'];
+                $price = $_SESSION["tp"];
                 $transactionId = substr(bin2hex(random_bytes(8)), 0, 16);
+
+                $timestamp = time(); // Get the current Unix timestamp
+                $randomDigits = substr(bin2hex(random_bytes(8)), 0, 16 - strlen($timestamp)); // Generate the random digits
+                $subscriptionId = $timestamp . $randomDigits;
 
                 $checkStmt = $conn->prepare("SELECT * FROM otp_expiry WHERE otp = ? AND is_expired != 1 AND NOW() <= DATE_ADD(created, INTERVAL 2 MINUTE)");
                 if ($checkStmt === false) {
@@ -121,15 +123,15 @@ try {
 
                     $updateStmt->close();
     
-                    echo "Valid OTP";
+                    echo "Your Order Successfully Placed";
 
                     $insertQuery2 = "INSERT INTO transaction (username, transactionid) VALUES (?, ?)";
                     $insertStmt2 = $conn->prepare($insertQuery2);
                     $insertStmt2->bind_param("ss", $username, $transactionId);
         
-                    $insertQuery = "INSERT INTO subscription (username, goal, gender, weight, height, duration, meals, diet, type, mealtype, transactionid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $insertQuery = "INSERT INTO subscription (username, goal, gender, duration, meals, diet, type, mealtype, transactionid, amount,  subscriptionid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $insertStmt = $conn->prepare($insertQuery);
-                    $insertStmt->bind_param("sssiissssss", $username, $goal, $gender, $weight, $height, $days, $meal, $diet, $sty, $choose, $transactionId);
+                    $insertStmt->bind_param("sssssssssds", $username, $goal, $gender, $days, $meal, $diet, $sty, $choose, $transactionId, $price, $subscriptionId);
         
         
                     if (!$insertStmt2->execute()) {
@@ -158,8 +160,8 @@ try {
                 
                             //Content
                             $mail2->isHTML(true);                                  
-                            $mail2->Subject = 'Signup to Foodelight';
-                            $mail2->Body    = "Hi " . $username . ", <br><br>Your transaction Id is " . $transactionId . " for your subscription plan.<br><br>You have have subscribed with customised diet + food delivery.<br><br>Your meal will be delievred according to your timings.<br><br>Thanks,<br>Foodelight";
+                            $mail2->Subject = 'Welcome to Foodelight';
+                            $mail2->Body    = "Hi " . $username . ", <br><br>Your Transaction Id is " . $transactionId . " and Subscription ID is " . $subscriptionId . " for your subscription plan.<br><br>You have have subscribed with customised diet + food delivery.<br><br>Your meal will be delievred according to your timings.<br><br>Thanks,<br>Foodelight";
                             
                 
                             $result = $mail2->send();

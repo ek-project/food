@@ -61,7 +61,33 @@ $(document).ready(function() {
 
 $("#username, #pwd, #otp").on("input", function() {
   $("#error-message").text('').hide();
+  $("#error1-message").text('').hide();
 });
+
+$("#username").on("focusout",function() {
+    var username = $(this).val();
+
+    if (username) { // Only make the AJAX request if the username is not empty
+        $.ajax({
+            url: "resources/php/login.php", // replace with the URL of your script that checks if a username is available
+            type: "POST",
+            data: { username: username },
+            success: function(response) {
+                if (response === "Account Not Found! Please create your account.") {
+                    $("#error1-message").text(response).show();
+                    $("#submit-btn").prop('disabled', true);
+                } else {
+                    $("#error1-message").text('').hide();
+                    $("#submit-btn").prop('disabled', false);
+                }
+            }
+        });
+    } else {
+        $("#error1-message").text('').hide();
+        $("#submit-btn").prop('disabled', false);
+    }
+});
+
 
 
 $("#submit-btn").click(function(e) {
@@ -142,6 +168,7 @@ $("#submit-btn").click(function(e) {
               });
           } else {
               $("#error-message").text(response).show();
+              $("#error1-message").text('').hide();
               $(".contact-form")[0].reset();
           }
       }
@@ -151,3 +178,10 @@ $("#submit-btn").click(function(e) {
       $(this).prop('disabled', false);
   }
 });
+
+window.onpageshow = function(event) {
+    if (event.persisted) {
+        // Reset the form
+        $(".contact-form")[0].reset();
+    }
+};

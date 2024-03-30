@@ -47,7 +47,7 @@ try {
             }
 
             $checkStmt->store_result();
-            $checkStmt->bind_result($username, $email, $password); // bind the result set columns to PHP variable
+            $checkStmt->bind_result($username, $email, $password, $userId); // bind the result set columns to PHP variable
             $checkStmt->fetch();
 
             if ($checkStmt->num_rows() > 0) {
@@ -152,6 +152,36 @@ try {
             } catch (Exception $e) {
                 die("Error: " . $e->getMessage());
             }
+        } else if (isset($_POST["username"])) {
+            $usernamept = htmlspecialchars(trim($_POST["username"]));
+
+            if (filter_var($usernamept, FILTER_VALIDATE_EMAIL)) {
+                $checkQuery = "SELECT * FROM cdetails WHERE email = ?";
+            } else {
+                $checkQuery = "SELECT * FROM cdetails WHERE username = ?";
+            }
+
+            if (!($checkStmt = $conn->prepare($checkQuery))) {
+                throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+            }
+
+            if (!$checkStmt->bind_param("s", $usernamept)) {
+                throw new Exception("Binding parameters failed: (" . $checkStmt->errno . ") " . $checkStmt->error);
+            }
+
+            if (!$checkStmt->execute()) {
+                throw new Exception("Execute failed: (" . $checkStmt->errno . ") " . $checkStmt->error);
+            }
+
+            $checkStmt->store_result();
+
+            if ($checkStmt->num_rows > 0) {
+                // Username already taken, display an error message
+                echo "Account Found!";
+            } else {
+                echo "Account Not Found! Please create your account.";
+            }
+
         } else {
             // Handle case where one or more keys are not set
             throw new Exception("Error: One or more form fields are missing.");

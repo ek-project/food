@@ -110,3 +110,10 @@ $("#submit-btn").click(function(e) {
         $(this).prop('disabled', false);
     }
 });
+
+window.onpageshow = function(event) {
+    if (event.persisted) {
+        // Reset the form
+        $(".contact-form")[0].reset();
+    }
+};

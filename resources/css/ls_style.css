@@ -179,7 +179,7 @@ input[type=submit]:active{
     background-color: #cf6d17;
 }
 
-#submit-btn:disabled {
+#submit-btn:disabled, #pwd2:disabled {
     background-color: #ccc;
     border: 1px solid #ccc;
     cursor: not-allowed;
@@ -319,6 +319,17 @@ footer {
     display: none;
     color: red;
     margin-top: 10px;
+}
+
+.error1-message {
+    display: none;
+    color: red;
+    margin-top: 10px; /* This sets the top margin to 10px */
+    margin-bottom: 20px;
+}
+
+.timer {
+    margin: 10px 0;
 }
 
 

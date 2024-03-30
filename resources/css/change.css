@@ -124,11 +124,12 @@ input[type=submit]:active{
     background-color: #cf6d17;
 }
 
-#submit-btn:disabled {
+#submit-btn:disabled, #pwd3:disabled {
     background-color: #ccc;
     border: 1px solid #ccc;
     cursor: not-allowed;
 }
+
 
 img {
     width: 90px;
@@ -202,4 +203,15 @@ footer a {
     color: red;
     margin-top: 10px;
 }
+
+section {
+    padding: 40px 0;
+    width: auto;
+    height: auto;
+}
+
+.less {
+    padding: 0;
+}
+
 

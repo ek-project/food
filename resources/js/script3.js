@@ -33,6 +33,7 @@ $('.free-button').click(function(e) {
             paymentData = $("#upi").val();
             if (!paymentData) {
                 alert("Please enter your UPI ID.");
+                $(this).prop('disabled', false);
                 return;
             }
             break;
@@ -41,7 +42,8 @@ $('.free-button').click(function(e) {
             pd1 = $("#ccn1").val();
             pd2 = $("#ccn2").val();
             if (!paymentData || !pd1 || !pd2) {
-                alert("Please fill in all fields.");
+                alert("Please fill card details.");
+                $(this).prop('disabled', false);
                 return;
             }
             break;
@@ -49,11 +51,13 @@ $('.free-button').click(function(e) {
             paymentData = $("#paypal").val();
             if (!paymentData) {
                 alert("Please enter your paypal ID.");
+                $(this).prop('disabled', false);
                 return;
             }
             break;
         default:
             alert("Invalid payment option.");
+            $(this).prop('disabled', false);
             return;
     }
 
@@ -133,7 +137,7 @@ $('.free-button').click(function(e) {
                             type: "post",
                             data: { otp: otp },
                             success: function(response) {
-                                if (response === "Valid OTP") {
+                                if (response === "Your Order Successfully Placed") {
                                     $("#success-message").text(response).show();
                                     setTimeout(function() {
                                         window.location.href = "index2s.php";
@@ -151,8 +155,10 @@ $('.free-button').click(function(e) {
 
             } else {
                 $("#error-message").text(response).show();
+                $(this).prop('disabled', false);
                 $(".contact-form")[0].reset();
             }
         }
     });
 });
+

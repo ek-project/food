@@ -41,10 +41,11 @@ if(isset($_SESSION['username'])) {
                         <ul class="main-nav js--main-nav">
                             <li><a href="#">Pricing</a></li>
                             <li><a href="#">My Account</a></li>
-                            <li><a href="#">My Plans</a></li>
+                            <li><a href="plan.php">My Plans</a></li>
                             <li><a href="logout.php">Logout</a></li>
                             <li><a href="#"><img id="profileImage" width="48" height="48" src="https://img.icons8.com/fluency/48/user-male-circle--v1.png" alt="Profile Photo" title="<?php echo $_SESSION['username']; ?>"/></a></li>
                         </ul>
+                        <a class="mobile-nav-icon js--nav-icon"><ion-icon name="menu-sharp"></ion-icon></a>
                     </div>
                 </nav>
             </header>
@@ -76,37 +77,9 @@ if(isset($_SESSION['username'])) {
                         </div>
                         <div class="col span-2-of-3">
                             <select name="gender" id="gender" required>
-                                <option value="M">Male</option>
-                                <option value="F">Female</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
                             </select>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col span-1-of-3">
-                            <label for="age">Age</label>
-                        </div>
-                        <div class="col span-2-of-3">
-                            <input type="number" id="age" name="age" min="1" required>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col span-1-of-3">
-                            <label for="weight">Weight in Kgs</label>
-                        </div>
-                        <div class="col span-2-of-3">
-                            <input type="number" id="Weight" name="weight" min="1" required>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col span-1-of-3">
-                            <label for="height">Height in cms</label>
-                        </div>
-                        <div class="col span-2-of-3">
-                            <input type="range" id="height" name="height" min="120" max="210" required>
-                            <output id="height_output"></output>
                         </div>
                     </div>
 
@@ -169,10 +142,16 @@ if(isset($_SESSION['username'])) {
                             <label for="choose" id="choose">Choose your for each day!</label>
                         </div>
                         <div class="col span-2-of-3">
-                            <input type="checkbox" name="choose" id="choose">Breakfast
-                            <input type="checkbox" name="choose" id="choose">Lunch
-                            <input type="checkbox" name="choose" id="choose">Snacks
-                            <input type="checkbox" name="choose" id="choose">Dinner
+                            <input type="checkbox" name="choose" id="choose" value="Breakfast">Breakfast
+                            <input type="checkbox" name="choose" id="choose" value="Lunch">Lunch
+                            <input type="checkbox" name="choose" id="choose" value="Snacks">Snacks
+                            <input type="checkbox" name="choose" id="choose" value="Dinner">Dinner
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="row span-2-of-2 sys">
+                            <p>Note: These values are defualt selected </p>
                         </div>
                     </div>
 

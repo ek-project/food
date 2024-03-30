@@ -12,8 +12,14 @@ $('#icon2').click(function() {
     this.name = this.name == "eye-off-outline" ? "eye-outline" : "eye-off-outline";
 });
 
+$("#pwd2, #pwd3").on("input", function() {
+    if ($(this).val()) {
+        $("#error-message").text('').hide();
+        $("#error1-message").text('').hide();
+    }
+});
+
 $(document).ready(function() {
-    const password1 = $("#pwd1");
     const password2 = $("#pwd2");
     const password3 = $("#pwd3");
     const submitBtn = $("#submit-btn");
@@ -22,23 +28,34 @@ $(document).ready(function() {
     submitBtn.prop("disabled", false);
   
     // Add event listeners to both password fields
-    password1.on("input", checkPasswords);
-    password2.on("input", checkPasswords);
+    password2.on("focusout", checkPasswords);
+    password3.on("input", checkPasswords);
   
     function checkPasswords() {
         // Check if the passwords match
-        if ((password2.val() === password3.val()) && (password2.val().length >= 8 && password2.val().length <= 16)) {
-            // If they match, enable the button
-            submitBtn.prop("disabled", false);
-        } else if ((password2.val().length == 0) && (password3.val().length == 0)){
-            submitBtn.prop("disabled", false);
+        if ((password2.val().length >= 8 && password2.val().length <= 16)) {
+            $("#pwd3").prop("disabled", false);
+            if (password2.val() === password3.val()) {
+                submitBtn.prop("disabled", false);
+                $("#error-message").text('').hide();
+            } else if ((password2.val().length == 0) && (password3.val().length == 0)){
+                $("#error-message").text('').hide();
+                submitBtn.prop("disabled", false);
+            } else {
+                // If they don't match, disable the button
+                submitBtn.prop("disabled", true);
+                $("#error-message").text('Passwords do not match').show();
+            }
         } else {
             // If they don't match, disable the button
+            $("#pwd3").prop("disabled", true);
+            $("#pwd3").val('');
             submitBtn.prop("disabled", true);
+            $("#error-message").text('Password should be around 8 to 16 characters.').show();
         }
-    }
   
-  });
+  }
+});
 
 
   $("#submit-btn").click(function(e) {
@@ -46,7 +63,7 @@ $(document).ready(function() {
     $("#success-message").text('').hide()
     $("#error-message").text('').hide()
 
-    if ($("#pwd1").val() && $("#pwd2").val() && $("#pwd3").val()) {
+    if ($("#pwd2").val() && $("#pwd3").val()) {
         $.ajax({
             url: "resources/php/change.php",
             type: "POST",

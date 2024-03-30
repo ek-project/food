@@ -318,6 +318,17 @@ footer {
     margin: 10px 0;
 }
 
+.error1-message {
+    display: none;
+    color: red;
+    margin-top: 10px; /* This sets the top margin to 10px */
+    margin-bottom: 20px;
+}
+
+.timer {
+    margin: 10px 0;
+}
+
 
 
 

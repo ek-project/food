@@ -16,9 +16,9 @@ try {
     // Check if the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        if (isset($_POST["pwd1"]) && isset($_POST["pwd2"]) && isset($_POST["pwd3"])) {
+        if (isset($_POST["pwd2"]) && isset($_POST["pwd3"])) {
             // Retrieve form data
-            $pwd = htmlspecialchars(trim($_POST["pwd1"]));
+            $pwd = htmlspecialchars(trim($_POST["pwd2"]));
             $pwd3 = htmlspecialchars(trim($_POST["pwd3"]));
 
             $emailpt = $_SESSION['email'];
@@ -38,41 +38,36 @@ try {
             }
 
             $checkStmt->store_result();
-            $checkStmt->bind_result($username, $email, $password); // bind the result set columns to PHP variable
+            $checkStmt->bind_result($username, $email, $password, $userId); // bind the result set columns to PHP variable
             $checkStmt->fetch();
 
             if ($checkStmt->num_rows() > 0) {
-                if (password_verify($pwd,$password)) {
+                try {
 
-                    try {
+                    $hashedPassword = password_hash($pwd3, PASSWORD_DEFAULT);
 
-                        $hashedPassword = password_hash($pwd3, PASSWORD_DEFAULT);
+                    // Prepare an UPDATE statement
+                    $updateStmt = $conn->prepare("UPDATE cdetails SET password = ? WHERE email = ?");
 
-                        // Prepare an UPDATE statement
-                        $updateStmt = $conn->prepare("UPDATE cdetails SET password = ? WHERE email = ?");
-
-                        // Check if the statement was prepared successfully
-                        if ($updateStmt === false) {
-                            throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-                        }
-
-                        // Bind the new password and the email to the statement
-                        if (!$updateStmt->bind_param("ss", $hashedPassword, $emailpt)) {
-                            throw new Exception("Binding parameters failed: (" . $updateStmt->errno . ") " . $updateStmt->error);
-                        }
-
-                        // Execute the statement
-                        if (!$updateStmt->execute()) {
-                            throw new Exception("Execute failed: (" . $updateStmt->errno . ") " . $updateStmt->error);
-                        }
-
-                        echo "Password updated successfully";                    
-
-                    } catch (Exception $e) {
-                        echo $e->getMessage(), "\n";
+                    // Check if the statement was prepared successfully
+                    if ($updateStmt === false) {
+                        throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
                     }
-                } else {
-                    echo "Invalid credentials1";
+
+                    // Bind the new password and the email to the statement
+                    if (!$updateStmt->bind_param("ss", $hashedPassword, $emailpt)) {
+                        throw new Exception("Binding parameters failed: (" . $updateStmt->errno . ") " . $updateStmt->error);
+                    }
+
+                    // Execute the statement
+                    if (!$updateStmt->execute()) {
+                        throw new Exception("Execute failed: (" . $updateStmt->errno . ") " . $updateStmt->error);
+                    }
+
+                    echo "Password updated successfully";                    
+
+                } catch (Exception $e) {
+                    echo $e->getMessage(), "\n";
                 }
 
             } else {
