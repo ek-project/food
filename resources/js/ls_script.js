@@ -17,6 +17,8 @@ $(document).ready(function() {
   const password2 = $("#pwd2");
   const email = $('#email');
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  // Password policy: at least one uppercase letter, one lowercase letter, one special character, and one number
+  var passwordPolicy = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,16}$/;
   const submitBtn = $("#submit-btn");
 
   // Enable the button initially
@@ -27,44 +29,56 @@ $(document).ready(function() {
   password1.on("focusout", checkPasswords);
   password2.on("input", checkPasswords);
 
-  function checkPasswords() {
-    // Check if the passwords match
-    if (emailRegex.test(email.val())) {
-        // If they match, enable the button
-        if ((password1.val().length >= 8 && password1.val().length <= 16)) {
-            $("#pwd2").prop("disabled", false);
-            if (password1.val() === password2.val()) {
-                submitBtn.prop("disabled", false);
-                $("#error-message").text('').hide();
-            } else if ((password1.val().length == 0) && (password2.val().length == 0)){
-                $("#error-message").text('').hide();
-                submitBtn.prop("disabled", false);
-            } else {
-                // If they don't match, disable the button
-                submitBtn.prop("disabled", true);
-                $("#error-message").text('Passwords do not match').show();
-            }
-        } else {
-            // If they don't match, disable the button
-            $("#pwd2").prop("disabled", true);
-            $("#pwd2").val('');
-            submitBtn.prop("disabled", true);
-            $("#error-message").text('Password should be around 8 to 16 characters.').show();
-        }
-    } else if (!email.val()) {
+  password1.on("paste", function(e) {
+    e.preventDefault();
+});
+password2.on("paste", function(e) {
+    e.preventDefault();
+});
+
+function checkPasswords() {
+
+    if (!email.val()) {
         submitBtn.prop("disabled", true);
         $("#error-message").text('Email address is required').show();
-    } else {
+        return;
+    }
+
+    if (!emailRegex.test(email.val())) {
+        $("#pwd2").prop("disabled", true);
+        $("#pwd1").prop("disabled", true);
         submitBtn.prop("disabled", true);
         $("#error-message").text('Invalid email address').show();
+        return;
+    }
+
+    $("#pwd1").prop("disabled", false);
+
+    if (!passwordPolicy.test(password1.val())) {
+        $("#pwd2").prop("disabled", true);
+        submitBtn.prop("disabled", true);
+        $("#error-message").text('Password should be 8 to 16 characters, with at least one uppercase letter, one lowercase letter, one special character, and one number.').show();
+        return;
+    }
+
+    $("#pwd2").prop("disabled", false);
+
+    if (password1.val() === password2.val()) {
+        submitBtn.prop("disabled", false);
+        $("#error-message").text('').hide();
+    } else if (password1.val().length == 0 && password2.val().length == 0) {
+        $("#error-message").text('').hide();
+        submitBtn.prop("disabled", false);
+    } else {
+        submitBtn.prop("disabled", true);
+        $("#error-message").text('Passwords do not match').show();
     }
 }
 
 });
 
-$("#name, #email, #pwd1, #pwd2, #otp").on("input", function() {
+$("#email, #pwd1, #pwd2, #otp").on("input", function() {
     $("#error-message").text('').hide();
-    $("#error1-message").text('').hide();
 });
 
 
@@ -117,6 +131,14 @@ $(document).ready(function() {
         
         $("#success-message").text('').hide()
         $("#error-message").text('').hide()
+
+        // Check if any error message is visible
+        if ($("#error-message").is(":visible") || $("#error1-message").is(":visible")) {
+            // If any error message is visible, alert the user and stop the form submission
+            alert("Please correct the errors before submitting the form.");
+            $(this).prop('disabled', false); // Enable the button again
+            return;
+        }
     
         if ($("#name").val() && $("#email").val() && $("#pwd1").val() && $("#pwd2").val() && ($("#agree").is(":checked"))) {
             $.ajax({

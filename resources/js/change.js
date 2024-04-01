@@ -30,31 +30,39 @@ $(document).ready(function() {
     // Add event listeners to both password fields
     password2.on("focusout", checkPasswords);
     password3.on("input", checkPasswords);
+
+    password2.on("paste", function(e) {
+        e.preventDefault();
+    });
+    password3.on("paste", function(e) {
+        e.preventDefault();
+    });
   
     function checkPasswords() {
-        // Check if the passwords match
-        if ((password2.val().length >= 8 && password2.val().length <= 16)) {
-            $("#pwd3").prop("disabled", false);
-            if (password2.val() === password3.val()) {
-                submitBtn.prop("disabled", false);
-                $("#error-message").text('').hide();
-            } else if ((password2.val().length == 0) && (password3.val().length == 0)){
-                $("#error-message").text('').hide();
-                submitBtn.prop("disabled", false);
-            } else {
-                // If they don't match, disable the button
-                submitBtn.prop("disabled", true);
-                $("#error-message").text('Passwords do not match').show();
-            }
-        } else {
-            // If they don't match, disable the button
+        // Password policy: at least one uppercase letter, one lowercase letter, one special character, and one number
+        var passwordPolicy = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,16}$/;
+    
+        if (!passwordPolicy.test(password2.val())) {
             $("#pwd3").prop("disabled", true);
             $("#pwd3").val('');
             submitBtn.prop("disabled", true);
-            $("#error-message").text('Password should be around 8 to 16 characters.').show();
+            $("#error-message").text('Password should be 8 to 16 characters, with at least one uppercase letter, one lowercase letter, one special character, and one number.').show();
+            return;
         }
-  
-  }
+    
+        $("#pwd3").prop("disabled", false);
+    
+        if (password2.val() === password3.val()) {
+            submitBtn.prop("disabled", false);
+            $("#error-message").text('').hide();
+        } else if (password2.val().length == 0 && password3.val().length == 0) {
+            $("#error-message").text('').hide();
+            submitBtn.prop("disabled", false);
+        } else {
+            submitBtn.prop("disabled", true);
+            $("#error-message").text('Passwords do not match').show();
+        }
+    }
 });
 
 

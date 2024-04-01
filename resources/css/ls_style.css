@@ -179,7 +179,7 @@ input[type=submit]:active{
     background-color: #cf6d17;
 }
 
-#submit-btn:disabled, #pwd2:disabled {
+#submit-btn:disabled, #pwd2:disabled, #pwd1:disabled, #email:disabled {
     background-color: #ccc;
     border: 1px solid #ccc;
     cursor: not-allowed;
