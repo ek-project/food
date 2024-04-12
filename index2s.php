@@ -40,7 +40,7 @@ if(isset($_SESSION['username'])) {
                         <img src="resources/img/orange.svg" alt="Foodelight logo" class="logo">
                         <ul class="main-nav js--main-nav">
                             <li><a href="#">Pricing</a></li>
-                            <li><a href="#">My Account</a></li>
+                            <li><a href="acc.php">My Account</a></li>
                             <li><a href="plan.php">My Plans</a></li>
                             <li><a href="logout.php">Logout</a></li>
                             <li><a href="#"><img id="profileImage" width="48" height="48" src="https://img.icons8.com/fluency/48/user-male-circle--v1.png" alt="Profile Photo" title="<?php echo $_SESSION['username']; ?>"/></a></li>
@@ -142,10 +142,10 @@ if(isset($_SESSION['username'])) {
                             <label for="choose" id="choose">Choose your for each day!</label>
                         </div>
                         <div class="col span-2-of-3">
-                            <input type="checkbox" name="choose" id="choose" value="Breakfast">Breakfast
-                            <input type="checkbox" name="choose" id="choose" value="Lunch">Lunch
-                            <input type="checkbox" name="choose" id="choose" value="Snacks">Snacks
-                            <input type="checkbox" name="choose" id="choose" value="Dinner">Dinner
+                            <input type="checkbox" name="choose[]"  class="choose" value="Breakfast">Breakfast
+                            <input type="checkbox" name="choose[]"  class="choose" value="Lunch">Lunch
+                            <input type="checkbox" name="choose[]"  class="choose" value="Snacks">Snacks
+                            <input type="checkbox" name="choose[]"  class="choose" value="Dinner">Dinner
                         </div>
                     </div>
 

@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 date_default_timezone_set("Asia/Kolkata");
 
 require '../../PHPMailer/src/Exception.php';
@@ -28,17 +30,14 @@ try {
             $usernamept = htmlspecialchars(trim($_POST["username"]));
             $passwordpt = htmlspecialchars(trim($_POST["pwd"]));
             
-            if (filter_var($usernamept, FILTER_VALIDATE_EMAIL)) {
-                $checkQuery = "SELECT * FROM cdetails WHERE email = ?";
-            } else {
-                $checkQuery = "SELECT * FROM cdetails WHERE username = ?";
-            }
+            
+            $checkQuery = "SELECT * FROM user WHERE userid = ?";
 
             if (!($checkStmt = $conn->prepare($checkQuery))) {
                 throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
             }
 
-            if (!$checkStmt->bind_param("s", $usernamept)) {
+            if (!$checkStmt->bind_param("i", $usernamept)) {
                 throw new Exception("Binding parameters failed: (" . $checkStmt->errno . ") " . $checkStmt->error);
             }
 
@@ -51,20 +50,13 @@ try {
             $checkStmt->fetch();
 
             if ($checkStmt->num_rows() > 0) {
-                if (($usernamept == $username || $usernamept == $email) && (password_verify($passwordpt,$password))) {
-                    // Start a session
-                    if (session_start() === false) {
-                        throw new Exception("Failed to start session");
-                    }
-
-                    if (session_regenerate_id(true) === false) {
-                        throw new Exception("Failed to regenerate session ID");
-                    }
+                if (($usernamept == $userId) && (password_verify($passwordpt,$password))) {
 
                     // Store user data in the session
                     $_SESSION['username'] = $username;
                     $_SESSION['email'] = $email;
-
+                    $_SESSION['userId'] = $userId;
+                    
                     $otppt = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
                     $mail = new PHPMailer(true);
@@ -96,7 +88,7 @@ try {
                         echo 'OTP has been sent to your email';
 
                         if ($result == 1) {
-                            $checkQuery1 = "INSERT INTO otp_expiry(otp,is_expired) VALUES (?,?)";
+                            $checkQuery1 = "INSERT INTO otp(otp,expired) VALUES (?,?)";
 
                             if (!($checkStmt1 = $conn->prepare($checkQuery1))) {
                                 throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
@@ -129,7 +121,7 @@ try {
 
         } else if (isset($_POST["otp"])) {
             try {
-                $checkStmt = $conn->prepare("SELECT * FROM otp_expiry WHERE otp = ? AND is_expired != 1 AND NOW() <= DATE_ADD(created, INTERVAL 2 MINUTE)");
+                $checkStmt = $conn->prepare("SELECT * FROM otp WHERE otp = ? AND expired != 1 AND NOW() <= DATE_ADD(created, INTERVAL 2 MINUTE)");
                 if ($checkStmt === false) {
                     throw new Exception($conn->error);
                 }
@@ -138,7 +130,7 @@ try {
                 $result = $checkStmt->get_result();
             
                 if ($result->num_rows > 0) {
-                    $updateStmt = $conn->prepare("UPDATE otp_expiry SET is_expired = 1 WHERE otp = ?");
+                    $updateStmt = $conn->prepare("UPDATE otp SET expired = 1 WHERE otp = ?");
                     if ($updateStmt === false) {
                         throw new Exception($conn->error);
                     }
@@ -146,6 +138,17 @@ try {
                     $updateStmt->execute();
 
                     echo "OTP is valid.";
+
+                    $event = "Login to Foodelight";
+                    $userId = $_SESSION['userId'];
+                    $email = $_SESSION['email'];
+
+                    $insertQuery = "INSERT INTO activitylog (userid, email, event) VALUES (?, ?, ?)";
+                    $insertStmt = $conn->prepare($insertQuery);
+                    $insertStmt->bind_param("iss", $userId, $email, $event);
+                    if(!$insertStmt->execute()) {
+                        throw new Exception("Error: " . $insertStmt->error);
+                    }
                 } else {
                     echo "Invalid OTP!";
                 }
@@ -155,17 +158,14 @@ try {
         } else if (isset($_POST["username"])) {
             $usernamept = htmlspecialchars(trim($_POST["username"]));
 
-            if (filter_var($usernamept, FILTER_VALIDATE_EMAIL)) {
-                $checkQuery = "SELECT * FROM cdetails WHERE email = ?";
-            } else {
-                $checkQuery = "SELECT * FROM cdetails WHERE username = ?";
-            }
+
+            $checkQuery = "SELECT * FROM user WHERE userid = ?";
 
             if (!($checkStmt = $conn->prepare($checkQuery))) {
                 throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
             }
 
-            if (!$checkStmt->bind_param("s", $usernamept)) {
+            if (!$checkStmt->bind_param("i", $usernamept)) {
                 throw new Exception("Binding parameters failed: (" . $checkStmt->errno . ") " . $checkStmt->error);
             }
 

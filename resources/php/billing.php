@@ -61,7 +61,7 @@ try {
                 echo 'OTP has been sent to your email';
 
                 if ($result == 1) {
-                    $checkQuery1 = "INSERT INTO otp_expiry(otp,is_expired) VALUES (?,?)";
+                    $checkQuery1 = "INSERT INTO otp(otp,expired) VALUES (?,?)";
 
                     if (!($checkStmt1 = $conn->prepare($checkQuery1))) {
                         throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
@@ -99,13 +99,15 @@ try {
                 $sty = $_SESSION['sty'];
                 $choose = $_SESSION['choose'];
                 $price = $_SESSION["tp"];
+                $userid = $_SESSION['userId'];
+
                 $transactionId = substr(bin2hex(random_bytes(8)), 0, 16);
 
                 $timestamp = time(); // Get the current Unix timestamp
                 $randomDigits = substr(bin2hex(random_bytes(8)), 0, 16 - strlen($timestamp)); // Generate the random digits
                 $subscriptionId = $timestamp . $randomDigits;
 
-                $checkStmt = $conn->prepare("SELECT * FROM otp_expiry WHERE otp = ? AND is_expired != 1 AND NOW() <= DATE_ADD(created, INTERVAL 2 MINUTE)");
+                $checkStmt = $conn->prepare("SELECT * FROM otp WHERE otp = ? AND expired != 1 AND NOW() <= DATE_ADD(created, INTERVAL 2 MINUTE)");
                 if ($checkStmt === false) {
                     throw new Exception($conn->error);
                 }
@@ -114,7 +116,7 @@ try {
                 $result = $checkStmt->get_result();
 
                 if ($result->num_rows > 0) {
-                    $updateStmt = $conn->prepare("UPDATE otp_expiry SET is_expired = 1 WHERE otp = ?");
+                    $updateStmt = $conn->prepare("UPDATE otp SET expired = 1 WHERE otp = ?");
                     if ($updateStmt === false) {
                         throw new Exception($conn->error);
                     }
@@ -125,14 +127,13 @@ try {
     
                     echo "Your Order Successfully Placed";
 
-                    $insertQuery2 = "INSERT INTO transaction (username, transactionid) VALUES (?, ?)";
+                    $insertQuery2 = "INSERT INTO transaction (username, transactionid, userid) VALUES (?, ?, ?)";
                     $insertStmt2 = $conn->prepare($insertQuery2);
-                    $insertStmt2->bind_param("ss", $username, $transactionId);
+                    $insertStmt2->bind_param("ssi", $username, $transactionId, $userid);
         
-                    $insertQuery = "INSERT INTO subscription (username, goal, gender, duration, meals, diet, type, mealtype, transactionid, amount,  subscriptionid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $insertQuery = "INSERT INTO subscription (username, goal, gender, duration, meals, diet, type, mealtype, transactionid, amount,  subscriptionid, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $insertStmt = $conn->prepare($insertQuery);
-                    $insertStmt->bind_param("sssssssssds", $username, $goal, $gender, $days, $meal, $diet, $sty, $choose, $transactionId, $price, $subscriptionId);
-        
+                    $insertStmt->bind_param("sssssssssdsi", $username, $goal, $gender, $days, $meal, $diet, $sty, $choose, $transactionId, $price, $subscriptionId, $userid);
         
                     if (!$insertStmt2->execute()) {
                         throw new Exception("Error: " . $insertStmt2->error);
@@ -168,6 +169,15 @@ try {
         
                         } catch (Exception $e) {
                             echo 'Message could not be sent. Mailer Error: ', $mail2->ErrorInfo;
+                        }
+
+                        $event = "Subscribed to Foodelight";
+
+                        $insertQuery = "INSERT INTO activitylog (userid, email, event) VALUES (?, ?, ?)";
+                        $insertStmt = $conn->prepare($insertQuery);
+                        $insertStmt->bind_param("iss", $userid, $email, $event);
+                        if(!$insertStmt->execute()) {
+                            throw new Exception("Error: " . $insertStmt->error);
                         }
                     }
                 } else {

@@ -39,7 +39,7 @@ try {
             $_SESSION['password'] = $password;
 
             // Check if username already exists
-            $checkQuery = "SELECT * FROM cdetails WHERE username = ? OR email = ?";
+            $checkQuery = "SELECT * FROM user WHERE username = ? OR email = ?";
             $checkStmt = $conn->prepare($checkQuery);
             $checkStmt->bind_param("ss", $username, $email);
             $checkStmt->execute();
@@ -80,7 +80,7 @@ try {
                     echo 'OTP has been sent to your email';
     
                     if ($result == 1) {
-                        $checkQuery1 = "INSERT INTO otp_expiry(otp,is_expired) VALUES (?,?)";
+                        $checkQuery1 = "INSERT INTO otp(otp,expired) VALUES (?,?)";
     
                         if (!($checkStmt1 = $conn->prepare($checkQuery1))) {
                             throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
@@ -112,7 +112,7 @@ try {
                 $email = $_SESSION['email'];
                 $password = $_SESSION['password'];
 
-                $checkStmt = $conn->prepare("SELECT * FROM otp_expiry WHERE otp = ? AND is_expired != 1 AND NOW() <= DATE_ADD(created, INTERVAL 2 MINUTE)");
+                $checkStmt = $conn->prepare("SELECT * FROM otp WHERE otp = ? AND expired != 1 AND NOW() <= DATE_ADD(created, INTERVAL 2 MINUTE)");
                 if ($checkStmt === false) {
                     throw new Exception($conn->error);
                 }
@@ -121,7 +121,7 @@ try {
                 $result = $checkStmt->get_result();
 
                 if ($result->num_rows > 0) {
-                    $updateStmt = $conn->prepare("UPDATE otp_expiry SET is_expired = 1 WHERE otp = ?");
+                    $updateStmt = $conn->prepare("UPDATE otp SET expired = 1 WHERE otp = ?");
                     if ($updateStmt === false) {
                         throw new Exception($conn->error);
                     }
@@ -151,7 +151,7 @@ try {
                     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
                     // Username is available, proceed with insertion
-                    $insertQuery = "INSERT INTO cdetails (username, email, password, userid) VALUES (?, ?, ?, ?)";
+                    $insertQuery = "INSERT INTO user (username, email, password, userid) VALUES (?, ?, ?, ?)";
                     $insertStmt = $conn->prepare($insertQuery);
                     $insertStmt->bind_param("sssi", $username, $email, $hashedPassword, $userId);
     
@@ -187,7 +187,7 @@ try {
                             echo 'UserID has been sent to your email';
             
                             if ($result == 1) {
-                                $checkQuery1 = "INSERT INTO otp_expiry(otp,is_expired) VALUES (?,?)";
+                                $checkQuery1 = "INSERT INTO otp(otp,expired) VALUES (?,?)";
             
                                 if (!($checkStmt1 = $conn->prepare($checkQuery1))) {
                                     throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
@@ -210,6 +210,15 @@ try {
                         } catch (Exception $e) {
                             echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
                         }
+
+                        $event = "Signup to Foodelight";
+
+                        $insertQuery = "INSERT INTO activitylog (userid, email, event) VALUES (?, ?, ?)";
+                        $insertStmt = $conn->prepare($insertQuery);
+                        $insertStmt->bind_param("iss", $userId, $email, $event);
+                        if(!$insertStmt->execute()) {
+                            throw new Exception("Error: " . $insertStmt->error);
+                        }
                     }
     
                     // Close the prepared statements
@@ -228,7 +237,7 @@ try {
             $username = htmlspecialchars($_POST["name"]);
 
             // Check if username already exists
-            $checkQuery = "SELECT * FROM cdetails WHERE username = ?";
+            $checkQuery = "SELECT * FROM user WHERE username = ?";
             $checkStmt = $conn->prepare($checkQuery);
             $checkStmt->bind_param("s", $username);
             $checkStmt->execute();

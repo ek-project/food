@@ -23,7 +23,7 @@ try {
 
             $emailpt = $_SESSION['email'];
 
-            $checkQuery = "SELECT * FROM user WHERE email = ?";
+            $checkQuery = "SELECT * FROM admin WHERE email = ?";
 
             if (!($checkStmt = $conn->prepare($checkQuery))) {
                 throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
@@ -38,7 +38,7 @@ try {
             }
 
             $checkStmt->store_result();
-            $checkStmt->bind_result($username, $email, $password, $userId); // bind the result set columns to PHP variable
+            $checkStmt->bind_result($username, $email, $password, $adminid); // bind the result set columns to PHP variable
             $checkStmt->fetch();
 
             if ($checkStmt->num_rows() > 0) {
@@ -47,7 +47,7 @@ try {
                     $hashedPassword = password_hash($pwd3, PASSWORD_DEFAULT);
 
                     // Prepare an UPDATE statement
-                    $updateStmt = $conn->prepare("UPDATE user SET password = ? WHERE email = ?");
+                    $updateStmt = $conn->prepare("UPDATE admin SET password = ? WHERE email = ?");
 
                     // Check if the statement was prepared successfully
                     if ($updateStmt === false) {
@@ -65,15 +65,6 @@ try {
                     }
 
                     echo "Password updated successfully";
-
-                    $event = "Reset Password";
-
-                    $insertQuery = "INSERT INTO activitylog (userid, email, event) VALUES (?, ?, ?)";
-                    $insertStmt = $conn->prepare($insertQuery);
-                    $insertStmt->bind_param("iss", $userId, $email, $event);
-                    if(!$insertStmt->execute()) {
-                        throw new Exception("Error: " . $insertStmt->error);
-                    }
 
                 } catch (Exception $e) {
                     echo $e->getMessage(), "\n";

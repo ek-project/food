@@ -24,17 +24,13 @@ try {
             $meal = htmlspecialchars(trim($_POST["meal"]));
             $diet = htmlspecialchars(trim($_POST["diet"]));
             $sty = htmlspecialchars(trim($_POST["sty"]));
-            $choose = htmlspecialchars(trim($_POST["choose"]));
+            $choose = isset($_POST["choose"]) ? array_map(function($value) {
+                return htmlspecialchars(trim($value));
+            }, $_POST["choose"]) : [];
             $usernamept = $_SESSION['username'];
 
 
-            /*if ($days === "4w") { 
-                $fweek = 28;
-            } else if ($days === "2w") {
-                $fweek = 14;
-            } else {
-                $fweek = 3;
-            }*/
+            $choose_string = implode(', ', $choose);
             
 
             // Check if an active subscription already exists for the account
@@ -71,7 +67,7 @@ try {
                 $_SESSION['meal'] = $meal;
                 $_SESSION['diet'] = $diet;
                 $_SESSION['sty'] = $sty;
-                $_SESSION['choose'] = $choose;
+                $_SESSION['choose'] = $choose_string;
 
                 echo "Redirecting to payment Page...";
             }

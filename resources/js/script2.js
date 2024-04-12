@@ -32,7 +32,7 @@ $(document).ready(function() {
     var initialOption = $('#meal option:first').text();
     $('#choose').text('Choose your ' + initialOption + ' for each day!');
 
-    var initialLimit = parseInt(initialOption[0]);
+    var initialLimit = parseInt(initialOption.match(/\d+/)[0]);
     limitCheckboxes(initialLimit);
 
     // Update the label text when the select box changes
@@ -43,20 +43,21 @@ $(document).ready(function() {
         // Uncheck all checkboxes and reset them when the selected option changes
         $('.choose input[type=checkbox]').prop('checked', false);
 
-
         // Hide the "choose" class if "4 meals" is selected
         if (selectedOption === '4 meals') {
             $('.choose input[type=checkbox]').prop('checked', true);
             $('.choose').hide();
         } else {
             $('.choose').show();
-            var newLimit = parseInt(selectedOption[0]);
+            var newLimit = parseInt(selectedOption.match(/\d+/)[0]);
             limitCheckboxes(newLimit);
         }
     });
 
     function limitCheckboxes(limit) {
-        $('.choose input[type=checkbox]').on('change', function(evt) {
+        $('.choose').off('change', 'input[type=checkbox]');
+        $('.choose').on('change', 'input[type=checkbox]', function(evt) {
+            console.log("Checkbox changed");
             if($('.choose input[type=checkbox]:checked').length > limit) {
                 $(this).prop('checked', false);
                 alert('You can only select ' + limit + ' meal(s).');

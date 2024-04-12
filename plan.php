@@ -1,51 +1,43 @@
 <?php
+    session_start();
+    
+    include "resources/php/config.php";
+    
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    if ($conn->connect_error) {
+        throw new Exception("Connection failed: " . $conn->connect_error);
+    }
+    
+    $username = $_SESSION['username'];
+    
+    
+    $checkQuery = "SELECT transactionid,datein,amount FROM subscription WHERE username = ?";
+    
+    if (!($checkStmt = $conn->prepare($checkQuery))) {
+        throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+    }
+    
+    if (!$checkStmt->bind_param("s", $username)) {
+        throw new Exception("Binding parameters failed: (" . $checkStmt->errno . ") " . $checkStmt->error);
+    }
+    
+    if (!$checkStmt->execute()) {
+        throw new Exception("Execute failed: (" . $checkStmt->errno . ") " . $checkStmt->error);
+    }
+    
+    $checkStmt->store_result();
+    $checkStmt->bind_result($transactionid, $datein ,$amount); // bind the result set columns to PHP variable
 
-session_start();
-
-include "resources/php/config.php";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    throw new Exception("Connection failed: " . $conn->connect_error);
-}
-
-$username = $_SESSION['username'];
-
-
-$checkQuery = "SELECT transactionid,datein,amount FROM subscription WHERE username = ?";
-
-if (!($checkStmt = $conn->prepare($checkQuery))) {
-    throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-}
-
-if (!$checkStmt->bind_param("s", $username)) {
-    throw new Exception("Binding parameters failed: (" . $checkStmt->errno . ") " . $checkStmt->error);
-}
-
-if (!$checkStmt->execute()) {
-    throw new Exception("Execute failed: (" . $checkStmt->errno . ") " . $checkStmt->error);
-}
-
-$checkStmt->store_result();
-$checkStmt->bind_result($trasnsactionid, $datein ,$amount); // bind the result set columns to PHP variable
-$checkStmt->fetch();
-
-if ($trasnsactionid && $datein && $amount) {
-    $result = "Success";
-} else {
-    $result = "Failed";
-}
-
-
-
-
-
-
+    $recordsFound = $checkStmt->num_rows > 0 ? true : false;
+    
+    if ($recordsFound) {
+        $result = "Success";
+    } else {
+        $result = "Failed";
+    }
+    
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -66,13 +58,13 @@ if ($trasnsactionid && $datein && $amount) {
     </head>
     <body>
         <div class="header-bg">
-            <header>
-                <nav>
+        <header>
+            <nav>
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col">
                             <a href="index2s.php">
-                                <img src="resources/img/orange.svg" alt="Foodelight logo" class="logo">
+                            <img src="resources/img/orange.svg" alt="Foodelight logo" class="logo">
                             </a>
                         </div>
                         <div class="col">
@@ -85,8 +77,8 @@ if ($trasnsactionid && $datein && $amount) {
                             </ul>
                         </div>
                     </div>
-                </nav>
-            </header>
+            </nav>
+        </header>
         </div>
         <section class="mt-3">
             <h2 class="text-center mb-5">PLAN HISTORY</h2>
@@ -112,21 +104,34 @@ if ($trasnsactionid && $datein && $amount) {
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <?php
+                                            // Assuming $results is the result of your database query
+                                            if ($recordsFound) {
+                                                while ($checkStmt->fetch()) {
+                                            ?>
                                         <tr class="align-middle">
-                                            <td>
-                                                <?php echo $trasnsactionid; ?>
-                                            </td>
+                                            <td><?php echo $transactionid; ?></td>
                                             <td><?php echo $datein; ?></td>
                                             <td><?php echo $username; ?></td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <span>₹<?php echo  number_format($amount,2); ?></span>
+                                                    <span>₹<?php echo number_format($amount, 2); ?></span>
                                                 </div>
                                             </td>
                                             <td>
                                                 <span class="badge fs-6 fw-normal bg-tint-success text-success"><?php echo $result; ?></span>
                                             </td>
                                         </tr>
+                                        <?php
+                                                }
+                                            } else {
+                                            ?>
+                                        <tr>
+                                            <td colspan="5">No records found</td>
+                                        </tr>
+                                        <?php
+                                            }
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>

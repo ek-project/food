@@ -13,7 +13,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 include 'config.php';
 
-
 try {
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -26,17 +25,19 @@ try {
     // Check if the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        if (isset($_POST["email"])) {
+        if (isset($_POST["username"]) && isset($_POST["pwd"])) {
             // Retrieve form data
-            $emailpt = htmlspecialchars(trim($_POST["email"]));
-                
-            $checkQuery = "SELECT * FROM user WHERE email = ?";
+            $usernamept = htmlspecialchars(trim($_POST["username"]));
+            $passwordpt = htmlspecialchars(trim($_POST["pwd"]));
+            
+            
+            $checkQuery = "SELECT * FROM admin WHERE username = ?";
 
             if (!($checkStmt = $conn->prepare($checkQuery))) {
                 throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
             }
 
-            if (!$checkStmt->bind_param("s", $emailpt)) {
+            if (!$checkStmt->bind_param("i", $usernamept)) {
                 throw new Exception("Binding parameters failed: (" . $checkStmt->errno . ") " . $checkStmt->error);
             }
 
@@ -45,14 +46,16 @@ try {
             }
 
             $checkStmt->store_result();
-            $checkStmt->bind_result($username, $email, $password, $userId); // bind the result set columns to PHP variable
+            $checkStmt->bind_result($adminid, $username, $password, $email); // bind the result set columns to PHP variable
             $checkStmt->fetch();
 
             if ($checkStmt->num_rows() > 0) {
-                if ($emailpt == $email) {
+                if (($usernamept == $username) && (password_verify($passwordpt,$password))) {
 
+                    // Store user data in the session
+                    $_SESSION['username'] = $username;
                     $_SESSION['email'] = $email;
-
+                    
                     $otppt = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
                     $mail = new PHPMailer(true);
@@ -70,12 +73,12 @@ try {
             
                         //Recipients
                         $mail->setFrom('nileriver6630@gmail.com', 'Foodelight');
-                        $mail->addAddress($emailpt);     
+                        $mail->addAddress($email);     
             
                         //Content
                         $mail->isHTML(true);                                  
-                        $mail->Subject = 'Reset Password';
-                        $mail->Body    = "Hi " . $username . ",<br><br>Your OTP for password reset is: " . $otppt . "<br><br>This OTP is valid for 2 minutes only.<br><br>Please use this OTP to reset your password.<br><br>Thanks,<br>Foodelight";
+                        $mail->Subject = 'Login Authentication for Admim';
+                        $mail->Body    = "Hi " . $username . ",<br><br>Your OTP for Login is: " . $otppt . "<br><br>This OTP is valid for 2 minutes only.<br><br>Please use this OTP to login to the Foodelight.<br><br>Thanks,<br>Foodelight";
                         
             
                         $result = $mail->send();
@@ -108,11 +111,11 @@ try {
                         echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
                     }
                 } else {
-                    echo "Invalid credentials1";
+                    echo "Invalid credentials";
                 }
 
             } else {
-                echo "Account not Found!";
+                echo "Invalid credentials";
             }
 
         } else if (isset($_POST["otp"])) {
@@ -133,18 +136,46 @@ try {
                     $updateStmt->bind_param("s", $_POST["otp"]);
                     $updateStmt->execute();
 
-                    echo "OTP is valid.";
+                    echo "Admin Login Success";
+
                 } else {
                     echo "Invalid OTP!";
                 }
             } catch (Exception $e) {
                 die("Error: " . $e->getMessage());
             }
+        } else if (isset($_POST["username"])) {
+            $usernamept = htmlspecialchars(trim($_POST["username"]));
+
+
+            $checkQuery = "SELECT * FROM user WHERE userid = ?";
+
+            if (!($checkStmt = $conn->prepare($checkQuery))) {
+                throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+            }
+
+            if (!$checkStmt->bind_param("i", $usernamept)) {
+                throw new Exception("Binding parameters failed: (" . $checkStmt->errno . ") " . $checkStmt->error);
+            }
+
+            if (!$checkStmt->execute()) {
+                throw new Exception("Execute failed: (" . $checkStmt->errno . ") " . $checkStmt->error);
+            }
+
+            $checkStmt->store_result();
+
+            if ($checkStmt->num_rows > 0) {
+                // Username already taken, display an error message
+                echo "Account Found!";
+            } else {
+                echo "Account Not Found! Please create your account.";
+            }
+
         } else {
             // Handle case where one or more keys are not set
             throw new Exception("Error: One or more form fields are missing.");
         }
-
+        
     }
 
     // Close the database connection

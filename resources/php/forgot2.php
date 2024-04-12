@@ -30,7 +30,7 @@ try {
             // Retrieve form data
             $emailpt = htmlspecialchars(trim($_POST["email"]));
                 
-            $checkQuery = "SELECT * FROM user WHERE email = ?";
+            $checkQuery = "SELECT * FROM admin WHERE email = ?";
 
             if (!($checkStmt = $conn->prepare($checkQuery))) {
                 throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
@@ -45,7 +45,7 @@ try {
             }
 
             $checkStmt->store_result();
-            $checkStmt->bind_result($username, $email, $password, $userId); // bind the result set columns to PHP variable
+            $checkStmt->bind_result($adminid, $username, $password, $email); // bind the result set columns to PHP variable
             $checkStmt->fetch();
 
             if ($checkStmt->num_rows() > 0) {
@@ -80,7 +80,7 @@ try {
             
                         $result = $mail->send();
                         $expiry = 0;
-
+                        
                         echo 'OTP has been sent to your email';
 
                         if ($result == 1) {
