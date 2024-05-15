@@ -12,6 +12,7 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 include "config.php";
+include "smtp.php";
 
 try {
     // Create connection
@@ -38,15 +39,15 @@ try {
                 //Server settings
                 $mail->SMTPDebug = 0;                                 
                 $mail->isSMTP();                                      
-                $mail->Host = 'smtp.elasticemail.com';  
+                $mail->Host = $smtphost;  
                 $mail->SMTPAuth = true;                               
-                $mail->Username = 'nileriver6630@gmail.com';                 
-                $mail->Password = 'D46F06FCC4076DFE0DB9E16386B509454EA6';                           
+                $mail->Username = $smtpusername;                 
+                $mail->Password = $smtppassword;                           
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;                            
-                $mail->Port = 2525;                                    
+                $mail->Port = $smtpport;                                    
     
                 //Recipients
-                $mail->setFrom('nileriver6630@gmail.com', 'Foodelight');
+                $mail->setFrom($smtpusername, 'Foodelight');
                 $mail->addAddress($email);     
     
                 //Content
@@ -148,15 +149,15 @@ try {
                             //Server settings
                             $mail2->SMTPDebug = 0;                                 
                             $mail2->isSMTP();                                      
-                            $mail2->Host = 'smtp.elasticemail.com';  
+                            $mail2->Host = $smtphost;  
                             $mail2->SMTPAuth = true;                               
-                            $mail2->Username = 'nileriver6630@gmail.com';                 
-                            $mail2->Password = 'D46F06FCC4076DFE0DB9E16386B509454EA6';                           
+                            $mail2->Username = $smtpusername;                 
+                            $mail2->Password = $smtppassword;                           
                             $mail2->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;                            
-                            $mail2->Port = 2525;                                    
+                            $mail2->Port = $smtpport;                                    
                 
                             //Recipients
-                            $mail2->setFrom('nileriver6630@gmail.com', 'Foodelight');
+                            $mail2->setFrom($smtpusername, 'Foodelight');
                             $mail2->addAddress($email);     
                 
                             //Content

@@ -12,6 +12,7 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 include 'config.php';
+include 'smtp.php';
 
 try {
     // Create connection
@@ -64,15 +65,15 @@ try {
                         //Server settings
                         $mail->SMTPDebug = 0;                                 
                         $mail->isSMTP();                                      
-                        $mail->Host = 'smtp.elasticemail.com';  
+                        $mail->Host = $smtphost;  
                         $mail->SMTPAuth = true;                               
-                        $mail->Username = 'nileriver6630@gmail.com';                 
-                        $mail->Password = 'D46F06FCC4076DFE0DB9E16386B509454EA6';                           
+                        $mail->Username = $smtpusername;                 
+                        $mail->Password = $smtppassword;                           
                         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;                            
-                        $mail->Port = 2525;                                    
+                        $mail->Port = $smtpport;                                    
             
                         //Recipients
-                        $mail->setFrom('nileriver6630@gmail.com', 'Foodelight');
+                        $mail->setFrom($smtpusername, 'Foodelight');
                         $mail->addAddress($email);     
             
                         //Content
